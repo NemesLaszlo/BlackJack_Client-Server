@@ -1,3 +1,0 @@
-blackjackclient.WriterToServer
-blackjackclient.ReaderFromServer
-blackjackclient.BlackJackClient

@@ -1,37 +1,31 @@
-package blackjackclient;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class BlackJackClient {
+public class Client {
 
-        public static void main(String[] args) {
-        String hostname ="localhost";
+    public static void main(String[] args) {
+        String hostname = "localhost";
         int serverPort = 2121;
 
-        try (
-                Socket echoSocket = new Socket(hostname, serverPort);
+        try (Socket echoSocket = new Socket(hostname, serverPort);
                 PrintWriter out = new PrintWriter(echoSocket.getOutputStream());
                 Scanner in = new Scanner(echoSocket.getInputStream());
-                Scanner stdIn = new Scanner(System.in);    
-            )
-        {
-                WriterToServer wts = new WriterToServer(echoSocket, out, stdIn);
-                ReaderFromServer rfs = new ReaderFromServer(echoSocket, in);
-                wts.start();
-                rfs.start();
-                
-                
-                try{
-                   wts.join(); 
-                   rfs.join(); 
-                }catch(InterruptedException e) {
-                    System.out.println("InterruptedException");
-                }   
-                
+                Scanner stdIn = new Scanner(System.in);) {
+            WriterToServer wts = new WriterToServer(echoSocket, out, stdIn);
+            ReaderFromServer rfs = new ReaderFromServer(echoSocket, in);
+            wts.start();
+            rfs.start();
+
+            try {
+                wts.join();
+                rfs.join();
+            } catch (InterruptedException e) {
+                System.out.println("InterruptedException");
+            }
+
         } catch (UnknownHostException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -51,15 +45,15 @@ class ReaderFromServer extends Thread {
 
     @Override
     public void run() {
-        while(input.hasNextLine()) {
+        while (input.hasNextLine()) {
             String line = input.nextLine();
             System.out.println(line);
-            
-            
+            if (line.contains("gyoztes")) {
+                System.exit(0);
             }
-        }        
+        }
+    }
 }
-          
 
 class WriterToServer extends Thread {
     private final Socket socket;
@@ -74,13 +68,11 @@ class WriterToServer extends Thread {
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             String msg = fromconsole.nextLine();
             output.println(msg);
             output.flush();
-        }   
+        }
     }
-        
-}   
 
-    
+}
