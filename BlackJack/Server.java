@@ -93,7 +93,7 @@ class Game extends Thread {
                     String winner = "";
                     for (Client y : Gameclients) {
                         if (y.startValue == max) {
-                            winner += y.name;
+                            winner += " " + y.name;
                         }
                     }
 
@@ -101,13 +101,16 @@ class Game extends Thread {
                         for (Client client : clients) {
                             client.out.println("A gyoztes(ek): " + winner);
                             client.out.flush();
+                            client.interrupt();
                             try {
                                 client.close();
                             } catch (Exception ex) {
                                 ex.printStackTrace();
                             }
                         }
+                        clients.clear();
                     }
+                    winner = "";
                 }
             }
         }
